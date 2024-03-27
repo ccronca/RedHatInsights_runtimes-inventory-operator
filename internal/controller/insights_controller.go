@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+package controller
 
 import (
 	"context"
@@ -70,9 +70,12 @@ func NewInsightsReconciler(config *InsightsReconcilerConfig) (*InsightsReconcile
 	}, nil
 }
 
-// +kubebuilder:rbac:groups=apps,resources=deployments;deployments/finalizers,verbs=*
-// +kubebuilder:rbac:groups="",resources=services;secrets;configmaps;configmaps/finalizers,verbs=*
+// +kubebuilder:rbac:namespace=system,groups=apps,resources=deployments;deployments/finalizers,verbs=create;update;get;list;watch
+// +kubebuilder:rbac:namespace=system,groups="",resources=services;secrets;configmaps/finalizers,verbs=create;update;get;list;watch
+// +kubebuilder:rbac:namespace=system,groups="",resources=configmaps,verbs=create;update;delete;get;list;watch
 // +kubebuilder:rbac:groups=config.openshift.io,resources=clusterversions,verbs=get;list;watch
+// OLM doesn't let us specify RBAC for openshift-config namespace, so we need a cluster-wide permission
+// +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch,resourceNames=pull-secret
 
 // Reconcile processes the Insights proxy deployment and configures it accordingly
 func (r *InsightsReconciler) Reconcile(ctx context.Context, request ctrl.Request) (ctrl.Result, error) {
