@@ -42,10 +42,6 @@ the Red Hat Insights Runtimes Inventory."
 LABEL io.k8s.display-name="Runtimes Inventory Operator"
 LABEL io.openshift.tags="insights,java,openshift"
 
-# Update packages
-RUN microdnf -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs update
-RUN microdnf -y clean all
-
 COPY --from=builder /opt/app-root/manager .
 
 RUN mkdir /licenses
